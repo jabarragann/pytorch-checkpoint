@@ -1,4 +1,4 @@
-# pytorch-checkpoint
+# pytorch-checkpoint (Personal repo)
 
 [![PyPI version](https://badge.fury.io/py/pytorchcheckpoint.svg)](https://badge.fury.io/py/pytorchcheckpoint)
 
