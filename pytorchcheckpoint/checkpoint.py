@@ -4,9 +4,8 @@ import torch
 
 
 class CheckpointHandler:
-
     def __init__(self):
-        self.prefix_name = 'checkpoint'
+        self.prefix_name = "checkpoint"
 
     def store_var(self, var_name, value, exist_fail=False):
         if exist_fail is True and hasattr(self, var_name):
@@ -67,7 +66,7 @@ class CheckpointHandler:
 
     def generate_checkpoint_path(self, path2save):
         now = datetime.datetime.now()
-        filename = self.prefix_name + '_' + now.strftime("D%d_%m_%Y_T%H_%M") + ".pth.tar"
+        filename = self.prefix_name + "_" + now.strftime("D%d_%m_%Y_T%H_%M") + ".pth.tar"
         checkpoint_path = os.path.join(path2save, filename)
         return checkpoint_path
 
@@ -84,6 +83,13 @@ class CheckpointHandler:
         torch.save(self, checkpoint_path)
 
     @staticmethod
-    def load_checkpoint(checkpoint_path, map_location='cpu'):
+    def load_checkpoint(checkpoint_path, map_location="cpu"):
         checkpoint = torch.load(checkpoint_path, map_location=map_location)
         return checkpoint
+
+    @staticmethod
+    def load_checkpoint_with_model(checkpoint_path, model, optimizer, map_location="cpu"):
+        checkpoint = torch.load(checkpoint_path, map_location=map_location)
+        model.load_state_dict(checkpoint.model_state_dict)
+        optimizer.load_state_dict(checkpoint.optimizer_state_dict)
+        return checkpoint, model, optimizer
