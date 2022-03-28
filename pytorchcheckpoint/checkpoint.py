@@ -28,14 +28,17 @@ class CheckpointHandler:
         else:
             setattr(self, var_name, {iteration: value})
 
-    def get_running_var(self, var_name, iteration):
+    def get_running_var(self, var_name, iteration=None):
         if hasattr(self, var_name):
-            cur = getattr(self, var_name)
-            value = cur.get(iteration, None)
-            if value is None:
-                return False
+            if iteration == None:
+                return getattr(self, var_name)
             else:
-                return value
+                cur = getattr(self, var_name)
+                value = cur.get(iteration, None)
+                if value is None:
+                    return False
+                else:
+                    return value
         else:
             return False
 
@@ -70,7 +73,7 @@ class CheckpointHandler:
         checkpoint_path = os.path.join(path2save, filename)
         return checkpoint_path
 
-    def save_checkpoint(self, checkpoint_path, iteration, model, optimizer):
+    def save_checkpoint(self, checkpoint_path, iteration, batch_count, model, optimizer):
         if type(model) == torch.nn.DataParallel:
             # converting a DataParallel model to be able load later without DataParallel
             self.model_state_dict = model.module.state_dict()
@@ -79,7 +82,7 @@ class CheckpointHandler:
 
         self.optimizer_state_dict = optimizer.state_dict()
         self.iteration = iteration
-
+        self.batch_count = batch_count
         torch.save(self, checkpoint_path)
 
     @staticmethod
